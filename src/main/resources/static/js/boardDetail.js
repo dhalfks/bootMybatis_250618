@@ -1,4 +1,5 @@
 console.log("boardDetail.js in");
+
 document.getElementById('modBtn').addEventListener('click',()=>{
     
     //title, content의 readonly를 해지  readOnly = true / false
@@ -19,4 +20,53 @@ document.getElementById('modBtn').addEventListener('click',()=>{
     regBtn.innerHTML='update';
     // form 태그의 마지막 자식으로 추가 - form 태그의 가장 마지막에 추가
     document.getElementById('modForm').appendChild(regBtn);
+
+    // file-x 버튼의 style="visibility:visible;"  로 변환
+    let fileDelBtn = document.querySelectorAll(".file-x");
+    fileDelBtn.forEach(btn =>{
+        btn.style.visibility = "visible";
+        btn.addEventListener('click',()=>{
+            let uuid = btn.dataset.uuid;
+            fileRemoveToServer(uuid).then(result =>{
+                if(result === "1"){
+                    alert('파일 삭제 성공');
+                    btn.closest('li').remove();
+                }
+            })
+        })
+    })
+    // for(let btn of fileDelBtn){
+    //     console.log(btn);
+    //     btn.style.visibility = "visible";
+    // }
+
+    //fileupload 버튼 disabled 해지
+    document.getElementById('trigger').disabled = false;
 });
+
+// document.addEventListener('click', (e)=>{
+//     if(e.target.classList.contains('file-x')){
+//         let uuid = btn.dataset.uuid;
+        // fileRemoveToServer(uuid).then(result =>{
+        //     if(result === "1"){
+        //         alert('파일 삭제 성공');
+        //         btn.closest('li').remove();
+        //     }
+        // })
+//     }
+// })
+
+// file-x 비동기 보내서 파일 삭제
+async function fileRemoveToServer(uuid){
+    try {
+        const url = "/board/file/"+uuid;
+        const config = {
+            method : "delete"
+        }
+        const resp = await fetch(url, config);
+        const result = await resp.text();
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}
