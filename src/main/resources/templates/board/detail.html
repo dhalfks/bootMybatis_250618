@@ -2,13 +2,14 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout/layout}">
 
 <div layout:fragment="content">
     <div class="container-md">
         <th:block th:with="bvo=${boardDTO.boardVO}">
         <h3>No. [[${bvo.bno}]] / Board Detail Page </h3>
-        <form action="/board/modify" method="post" id="modForm">
+        <form action="/board/modify" method="post" id="modForm" enctype="multipart/form-data">
             <input type="hidden" name="bno" th:value="${bvo.bno}">
             <div class="mb-3">
                 <label for="t" class="form-label">title</label>
@@ -67,8 +68,40 @@
             <a th:href="@{/board/delete(bno=${bvo.bno})}"><button type="button" id="delBtn" class="btn btn-danger">Delete</button></a>
             <a th:href="@{/board/list}"><button type="button" class="btn btn-primary">List</button></a>
         </form>
+            <br><br>
+            <!--/* comment line */-->
+            <!--/* post */-->
+            <div class="input-group mb-3" sec:authorize="isAuthenticated()">
+                <span class="input-group-text" id="cmtWriter" th:text="${#authentication.getPrincipal().username}"></span>
+                <input type="text" id="cmtText" class="form-control" placeholder="Add Comment..." aria-label="Username" aria-describedby="basic-addon1">
+                <button type="button" id="cmtAddBtn" class="btn btn-secondary">post</button>
+            </div>
+            <!--/* spread */-->
+            <ul class="list-group list-group-flush" id="cmtListArea">
+                <li class="list-group-item">
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold">writer</div>
+                        Content
+                    </div>
+                    <span class="badge text-bg-primary rounded-pill">regDate</span>
+                </li>
+            </ul>
+
+            <script th:inline="javascript">
+                const bnoValue = [[${bvo.bno}]];
+                console.log(bnoValue);
+            </script>
+            <th:blcok sec:authorize="isAuthenticated()"
+                    th:with="authEmail=${#authentication.getPrincipal().username}">
+                <script th:inline="javascript">
+                    const userEmail = [[${authEmail}]];
+                    console.log(userEmail);
+                </script>
+            </th:blcok>
         </th:block>
+
         <script th:src="@{/js/boardDetail.js}"></script>
         <script th:src="@{/js/boardRegister.js}"></script>
+        <script th:src="@{/js/boardComment.js}"></script>
     </div>
 </div>
