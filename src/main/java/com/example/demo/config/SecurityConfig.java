@@ -31,7 +31,7 @@ public class SecurityConfig {
                         authorize.requestMatchers("/user/list").hasAnyRole("ADMIN")
                                 .requestMatchers("/","/index","/js/**","/dist/**", "/image/**"
                                 ,"/upload/**","/board/list", "/board/detail", "/user/signup", "/user/login",
-                                        "/comment/**")
+                                        "/comment/list/**")
                                 .permitAll()
                                 .anyRequest().authenticated()
                 )

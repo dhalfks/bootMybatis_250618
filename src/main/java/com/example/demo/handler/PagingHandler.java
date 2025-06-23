@@ -1,9 +1,12 @@
 package com.example.demo.handler;
 
+import com.example.demo.domain.CommentVO;
 import com.example.demo.domain.PagingVO;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -11,11 +14,13 @@ import lombok.ToString;
 public class PagingHandler {
     private int startPage;
     private int endPage;
-    private int readEndPage;
+    private int realEndPage;
     private boolean prev, next;
 
     private int totalCount;
     private PagingVO pagingVO;
+
+    private List<CommentVO> commentList;
 
     public PagingHandler(PagingVO pagingVO, int totalCount){
         this.pagingVO = pagingVO;
@@ -25,13 +30,18 @@ public class PagingHandler {
         this.endPage = (int)Math.ceil(pagingVO.getPageNo() / 10.0) * 10;
         this.startPage = endPage - 9;
 
-        this.readEndPage = (int)Math.ceil(this.totalCount / (double)pagingVO.getQty());
+        this.realEndPage = (int)Math.ceil(this.totalCount / (double)pagingVO.getQty());
 
-        if(this.readEndPage < this.endPage){
-            this.endPage = readEndPage;
+        if(this.realEndPage < this.endPage){
+            this.endPage = realEndPage;
         }
 
         this.prev = this.startPage > 1 ; // 1 11 21 31
-        this.next = this.endPage < this.readEndPage;
+        this.next = this.endPage < this.realEndPage;
+    }
+
+    public PagingHandler(PagingVO pagingVO, int totalCount, List<CommentVO> commentList){
+        this(pagingVO,totalCount);
+        this.commentList = commentList;
     }
 }
